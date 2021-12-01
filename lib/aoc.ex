@@ -23,15 +23,25 @@ defmodule Aoc do
 
   def run(input) do
     input
+    |> munge()
+    |> countem()
+    |> (fn {answer, _} -> answer end).()
+    |> IO.inspect()
+  end
+
+  def munge(string) do
+    string
     |> String.split("\n")
     |> Stream.map(&String.trim/1)
     |> Stream.filter(&(String.length(&1) > 0))
     |> Stream.map(&String.to_integer/1)
+  end
+
+  def countem(list) do
+    list
     |> Enum.reduce({0, nil}, fn
       x, {0, nil} -> {0, x}
       x, {acc, last} -> {(x > last && acc + 1) || acc, x}
     end)
-    |> (fn {answer, _} -> answer end).()
-    |> IO.inspect()
   end
 end
