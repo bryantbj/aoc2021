@@ -7,7 +7,7 @@ defmodule Aoc do
     ...>          up 3
     ...>          down 8
     ...>          forward 2")
-    150
+    900
   """
   def run(input \\ nil)
 
@@ -38,9 +38,10 @@ defmodule Aoc do
 
   def countem(list) do
     list
-    |> Enum.reduce({0, 0}, fn {x, y}, {acc_x, acc_y} ->
-      {acc_x + x, acc_y + y}
+    |> Enum.reduce({0, 0, 0}, fn
+      {0, aim}, {acc_x, acc_y, acc_a} -> {acc_x, acc_y, acc_a + aim}
+      {move, 0}, {acc_x, acc_y, acc_a} -> {acc_x + move, acc_y + move * acc_a, acc_a}
     end)
-    |> (fn {x, y} -> x * y end).()
+    |> (fn {x, y, _} -> x * y end).()
   end
 end
