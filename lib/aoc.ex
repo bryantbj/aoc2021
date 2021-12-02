@@ -11,7 +11,7 @@ defmodule Aoc do
     ...>   269
     ...>   260
     ...>   263")
-    7
+    5
   """
   def run(input \\ nil)
 
@@ -35,6 +35,8 @@ defmodule Aoc do
     |> Stream.map(&String.trim/1)
     |> Stream.filter(&(String.length(&1) > 0))
     |> Stream.map(&String.to_integer/1)
+    |> Stream.chunk_every(3, 1, :discard)
+    |> Stream.map(&sum/1)
   end
 
   def countem(list) do
@@ -43,5 +45,9 @@ defmodule Aoc do
       x, {0, nil} -> {0, x}
       x, {acc, last} -> {(x > last && acc + 1) || acc, x}
     end)
+  end
+
+  def sum(list) do
+    list |> Enum.reduce(0, &(&2 + &1))
   end
 end
