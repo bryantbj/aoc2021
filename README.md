@@ -12,6 +12,6 @@ The file structure is:
 - `lib/aoc.ex` - this is the main program file, containing the main entry point of `Aoc.run()`
 - `test/aoc_test.exs` - runs the entry point with the full input file; contains any other tests that can't be presented as doctests.
 
-So, on each branch, the files will all be as they were at the time of completion - i.e., `priv/input.txt` on `01-a-complete` will be the input from day 1, etc.
+On each branch, the files will all be as they were at the time of completion - i.e., `priv/input.txt` on `01-a-complete` will be the input from day 1, etc.
 
 Thanks for stopping by and enjoy! 🍻
