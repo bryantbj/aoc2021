@@ -1,21 +1,17 @@
 # Aoc
 
-**TODO: Add description**
+This repo tracks my progress in the 2021 [AdventOfCode](https://adventofcode.com/2021)
 
-## Installation
+Each challenge will be solved using Elixir.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `aoc` to your list of dependencies in `mix.exs`:
+Once a solution is reached, a branch is created in the format of `<day>-<part>-complete`, e.g. `01-a-complete`.
 
-```elixir
-def deps do
-  [
-    {:aoc, "~> 0.1.0"}
-  ]
-end
-```
+The file structure is:
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/aoc](https://hexdocs.pm/aoc).
+- `priv/input.txt` - this is the AOC-provided input for the challenge
+- `lib/aoc.ex` - this is the main program file, containing the main entry point of `Aoc.run()`
+- `test/aoc_test.exs` - runs the entry point with the full input file; contains any other tests that can't be presented as doctests.
 
+So, on each branch, the files will all be as they were at the time of completion - i.e., `priv/input.txt` on `01-a-complete` will be the input from day 1, etc.
+
+Thanks for stopping by and enjoy! 🍻
