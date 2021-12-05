@@ -14,7 +14,7 @@ defmodule AocTest do
     0,0 -> 8,8
     5,5 -> 8,2")
 
-    assert result == 5
+    assert result == 12
   end
 
   test "runs with input" do

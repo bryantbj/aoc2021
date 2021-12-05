@@ -10,7 +10,7 @@ defmodule Aoc do
   def run(input) do
     input
     |> clean()
-    |> only_horizontal_and_vertical()
+    |> only_horizontal_and_vertical_and_45()
     |> Stream.map(&plot_line/1)
     |> Enum.to_list()
     |> List.flatten()
@@ -30,20 +30,29 @@ defmodule Aoc do
     |> Stream.map(&Enum.map(&1, fn s -> String.to_integer(s) end))
   end
 
-  def only_horizontal_and_vertical(list) do
+  def only_horizontal_and_vertical_and_45(list) do
     list
-    |> Stream.filter(fn [x1, y1, x2, y2] -> x1 == x2 || y1 == y2 end)
+    |> Stream.filter(fn [x1, y1, x2, y2] ->
+      x1 == x2 || y1 == y2 || abs(x1 - x2) == abs(y1 - y2)
+    end)
   end
 
+  # horizontal
   def plot_line([x, y1, x, y2]) do
     Enum.reduce(y1..y2, [], fn el, acc ->
       [{x, el} | acc]
     end)
   end
 
+  # vertical
   def plot_line([x1, y, x2, y]) do
     Enum.reduce(x1..x2, [], fn el, acc ->
       [{el, y} | acc]
     end)
+  end
+
+  # diagonal
+  def plot_line([x1, y1, x2, y2]) do
+    Enum.zip(x1..x2, y1..y2)
   end
 end
