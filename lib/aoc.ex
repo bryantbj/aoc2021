@@ -21,7 +21,7 @@ defmodule Aoc do
       ...>18  8 23 26 20
       ...>22 11 13  6  5
       ...>2  0 12  3  7")
-      4512
+      1924
   """
   def run(input \\ nil)
 
@@ -139,6 +139,7 @@ defmodule Aoc do
     results
     |> Stream.map(&Tuple.to_list/1)
     |> Enum.sort_by(&Enum.at(&1, 0))
+    |> Enum.reverse()
     |> hd
   end
 
