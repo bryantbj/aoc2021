@@ -9,50 +9,34 @@ defmodule Aoc do
 
   def run(input) do
     input
-    |> clean()
-    |> only_horizontal_and_vertical_and_45()
-    |> Stream.map(&plot_line/1)
-    |> Enum.to_list()
-    |> List.flatten()
-    |> Enum.frequencies()
-    |> Enum.filter(fn {_, count} -> count >= 2 end)
-    |> length
+    |> String.split(~r/[,\n]/, trim: true)
+    |> Enum.map(&String.to_integer/1)
+    |> countem()
     |> IO.inspect()
   end
 
-  def clean(input) do
-    input
-    |> String.split("\n", trim: true)
-    |> Stream.map(&String.split(&1, " -> ", trim: true))
-    |> Stream.map(&Enum.map(&1, fn s -> String.trim(s) end))
-    |> Stream.map(&Enum.map(&1, fn s -> String.split(s, ",") end))
-    |> Stream.map(&List.flatten/1)
-    |> Stream.map(&Enum.map(&1, fn s -> String.to_integer(s) end))
-  end
+  def countem(list) do
+    Util.stream_reduce(1..80, list, fn _day, list ->
+      new_fish_count =
+        case Enum.frequencies(list) do
+          %{0 => n} -> n
+          _ -> 0
+        end
 
-  def only_horizontal_and_vertical_and_45(list) do
-    list
-    |> Stream.filter(fn [x1, y1, x2, y2] ->
-      x1 == x2 || y1 == y2 || abs(x1 - x2) == abs(y1 - y2)
+      list
+      |> Enum.map(fn
+        0 -> 6
+        n -> n - 1
+      end)
+      |> Enum.concat(list_of_8s(new_fish_count))
     end)
+    |> length
   end
 
-  # horizontal
-  def plot_line([x, y1, x, y2]) do
-    Enum.reduce(y1..y2, [], fn el, acc ->
-      [{x, el} | acc]
-    end)
-  end
-
-  # vertical
-  def plot_line([x1, y, x2, y]) do
-    Enum.reduce(x1..x2, [], fn el, acc ->
-      [{el, y} | acc]
-    end)
-  end
-
-  # diagonal
-  def plot_line([x1, y1, x2, y2]) do
-    Enum.zip(x1..x2, y1..y2)
+  def list_of_8s(count) do
+    case count do
+      0 -> []
+      n -> Enum.reduce(1..n, [], fn _, acc -> [8 | acc] end)
+    end
   end
 end
