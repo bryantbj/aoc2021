@@ -1,42 +1,54 @@
 defmodule Aoc do
-  def run(input \\ nil)
-
-  def run(input) when is_nil(input) do
+  def run(input, days) when is_nil(input) do
     Path.expand("../priv/input.txt", __DIR__)
     |> File.read!()
-    |> run()
+    |> run(days)
   end
 
-  def run(input) do
+  def run(input, days) do
     input
-    |> String.split(~r/[,\n]/, trim: true)
-    |> Enum.map(&String.to_integer/1)
-    |> countem()
+    |> clean()
+    |> calc_fish_population(days)
     |> IO.inspect()
   end
 
-  def countem(list) do
-    Util.stream_reduce(1..80, list, fn _day, list ->
-      new_fish_count =
-        case Enum.frequencies(list) do
-          %{0 => n} -> n
-          _ -> 0
-        end
-
-      list
-      |> Enum.map(fn
-        0 -> 6
-        n -> n - 1
-      end)
-      |> Enum.concat(list_of_8s(new_fish_count))
-    end)
-    |> length
+  def clean(input) do
+    input
+    |> String.split(~r/[,\n]/, trim: true)
+    |> Enum.map(&String.to_integer/1)
   end
 
-  def list_of_8s(count) do
-    case count do
-      0 -> []
-      n -> Enum.reduce(1..n, [], fn _, acc -> [8 | acc] end)
-    end
+  def calc_fish_population(list, days) do
+    countem(list, days)
+    |> Map.values()
+    |> Enum.sum()
+  end
+
+  def countem(list, days) do
+    Enum.reduce(1..days, Enum.frequencies(list), fn _day, acc ->
+      new_fish = Map.get(acc, 0)
+
+      acc
+      |> advance_fish()
+      |> add_fish(new_fish)
+    end)
+  end
+
+  def advance_fish(fish_counts) do
+    Enum.map(fish_counts, fn
+      {0, n} -> {6, n}
+      {i, n} -> {i - 1, n}
+    end)
+    |> map_counts
+  end
+
+  def add_fish(map, nil), do: map
+  def add_fish(map, 0), do: map
+  def add_fish(map, count), do: Map.update(map, 8, count, &(&1 + count))
+
+  def map_counts(list) do
+    Enum.reduce(list, %{}, fn {k, v}, map ->
+      Map.update(map, k, v, &(&1 + v))
+    end)
   end
 end
