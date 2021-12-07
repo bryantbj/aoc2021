@@ -10,7 +10,7 @@ defmodule Aoc do
   def run(input) do
     input
     |> clean()
-    |> calc_costs()
+    |> minimum_cost()
     |> IO.inspect()
   end
 
@@ -21,14 +21,31 @@ defmodule Aoc do
     |> Enum.to_list()
   end
 
-  def calc_costs(list) do
-    Enum.min(list)..Enum.max(list)
-    |> Stream.map(fn n ->
-      Stream.map(list, fn num ->
-        max(num, n) - min(num, n)
-      end)
-      |> Enum.sum()
-    end)
+  def minimum_cost(list) do
+    potential_cost_range(list)
+    |> Stream.map(movement_costs(list))
     |> Enum.min()
+  end
+
+  def distance(n1) do
+    fn n2 ->
+      max(n1, n2) - min(n1, n2)
+    end
+  end
+
+  def distance_cost(n) do
+    (n == 0 && 0) || Enum.sum(1..n)
+  end
+
+  def movement_costs(list) do
+    fn prospect ->
+      Stream.map(list, distance(prospect))
+      |> Stream.map(&distance_cost/1)
+      |> Enum.sum()
+    end
+  end
+
+  def potential_cost_range(list) do
+    Enum.min(list)..Enum.max(list)
   end
 end
