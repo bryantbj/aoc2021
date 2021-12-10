@@ -12,7 +12,9 @@ defmodule Aoc do
     |> analyze()
     |> determine_lows()
     |> Enum.sum()
-    |> IO.inspect()
+    # |> Enum.to_list()
+    # |> hd()
+    |> IO.inspect(charlists: :as_lists)
   end
 
   def analyze(input) do
@@ -34,25 +36,21 @@ defmodule Aoc do
 
     map
     |> Map.put(:list_size, length(lines))
-    |> Map.put(:input, Enum.join(lines))
+    |> Map.put(:input, Enum.join(lines) |> String.graphemes() |> List.to_tuple())
   end
 
   def determine_lows(%{input: input} = map) do
-    positions =
-      Util.stream_reduce(0..(String.length(input) - 1), [], fn i, acc ->
-        [
-          {position_to_value(i, input), determine_adjs(map, i)}
-          | acc
-        ]
-      end)
-
-    Stream.filter(positions, fn {i, list} ->
+    Util.stream_reduce(0..(tuple_size(input) - 1), [], fn i, acc ->
+      [{position_value(i, input), determine_adjs(map, i)} | acc]
+    end)
+    |> Stream.filter(fn {i, list} ->
+      list = Enum.map(list, &position_value(&1, input))
       Enum.all?(list, &(&1 > i))
     end)
-    |> Stream.map(fn {i, _} -> i + 1 end)
+    |> Stream.map(&(elem(&1, 0) + 1))
   end
 
-  def determine_adjs(%{list_size: size, length: len, input: input}, i) do
+  def determine_adjs(%{list_size: size, length: len}, i) do
     {posy, posx} = index_position(i, len)
 
     [
@@ -61,16 +59,17 @@ defmodule Aoc do
       posy > 0 && i - len,
       posy < size - 1 && i + len
     ]
-    |> Enum.reject(&(&1 == false || &1 == nil))
-    |> Enum.map(&position_to_value(&1, input))
+    |> Enum.filter(&is_integer/1)
   end
 
   def index_position(i, size) do
     {div(i, size), rem(i, size)}
   end
 
-  def position_to_value(i, input) do
-    String.at(input, i)
-    |> String.to_integer()
+  def position_value(i, input) do
+    elem(input, i) |> String.to_integer()
+  end
+
+  def basin(to_work, worked) do
   end
 end

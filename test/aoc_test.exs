@@ -9,6 +9,7 @@ defmodule AocTest do
         8767896789
         9899965678")
 
+    # assert result == 1334
     assert result == 15
   end
 
