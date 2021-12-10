@@ -4,13 +4,13 @@ defmodule AocTest do
 
   test "runs with test input" do
     result = Aoc.run("2199943210
-        3987894921
-        9856789892
-        8767896789
-        9899965678")
+                      3987894921
+                      9856789892
+                      8767896789
+                      9899965678")
 
     # assert result == 1334
-    assert result == 15
+    assert 15 == result
   end
 
   test "runs with input" do
