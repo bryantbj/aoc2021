@@ -8,30 +8,50 @@ defmodule Aoc do
   end
 
   def run(input) do
-    grid =
-      for {line, row} <- Enum.with_index(String.split(input, ~r/\s+/, trim: true)),
-          {number, col} <- Enum.with_index(String.to_charlist(line)),
-          into: %{} do
-        {{row, col}, number - ?0}
-      end
-
-    low_points =
-      grid
-      |> Enum.filter(fn {{row, col}, value} ->
-        up = grid[{row - 1, col}]
-        down = grid[{row + 1, col}]
-        left = grid[{row, col - 1}]
-        right = grid[{row, col + 1}]
-
-        value < up and value < down and value < left and value < right
-      end)
-
-    low_points
-    |> Enum.map(fn {point, _} -> Recursion.basin(point, grid) |> MapSet.size() end)
-    |> Enum.sort()
-    |> Enum.reverse()
-    |> Enum.take(3)
-    |> Enum.product()
+    input
+    |> String.split(~r/\s+/, trim: true)
+    |> Stream.map(&String.to_charlist/1)
+    |> Stream.map(&scan_line/1)
+    |> Stream.filter(& &1)
+    |> Enum.sum()
     |> IO.inspect()
+  end
+
+  def scan_line(chars) do
+    chars
+    |> Enum.reduce_while(
+      [],
+      fn
+        char, [last | rest] = acc ->
+          cond do
+            char in '[{<(' ->
+              {:cont, [char | acc]}
+
+            pair(char) != last ->
+              {:halt, char}
+
+            true ->
+              {:cont, rest}
+          end
+
+        char, [] ->
+          {:cont, [char]}
+      end
+    )
+    |> case do
+      l when is_list(l) ->
+        nil
+
+      c ->
+        char_points(c)
+    end
+  end
+
+  def pair(char) do
+    %{?] => ?[, ?} => ?{, ?) => ?(, ?> => ?<}[char]
+  end
+
+  def char_points(char) do
+    %{?) => 3, ?] => 57, ?} => 1197, ?> => 25137}[char]
   end
 end
