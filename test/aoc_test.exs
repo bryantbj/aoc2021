@@ -9,8 +9,7 @@ defmodule AocTest do
                       8767896789
                       9899965678")
 
-    # assert result == 1334
-    assert 15 == result
+    assert result == 1134
   end
 
   test "runs with input" do

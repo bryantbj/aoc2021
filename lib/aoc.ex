@@ -15,17 +15,23 @@ defmodule Aoc do
         {{row, col}, number - ?0}
       end
 
-    grid
-    |> Enum.filter(fn {{row, col}, value} ->
-      up = grid[{row + 1, col}]
-      down = grid[{row - 1, col}]
-      left = grid[{row, col - 1}]
-      right = grid[{row, col + 1}]
+    low_points =
+      grid
+      |> Enum.filter(fn {{row, col}, value} ->
+        up = grid[{row - 1, col}]
+        down = grid[{row + 1, col}]
+        left = grid[{row, col - 1}]
+        right = grid[{row, col + 1}]
 
-      value < up and value < down and value < left and value < right
-    end)
-    |> Enum.map(fn {_, value} -> value + 1 end)
-    |> Enum.sum()
+        value < up and value < down and value < left and value < right
+      end)
+
+    low_points
+    |> Enum.map(fn {point, _} -> Recursion.basin(point, grid) |> MapSet.size() end)
+    |> Enum.sort()
+    |> Enum.reverse()
+    |> Enum.take(3)
+    |> Enum.product()
     |> IO.inspect()
   end
 end
