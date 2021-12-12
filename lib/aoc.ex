@@ -13,7 +13,17 @@ defmodule Aoc do
     |> Stream.map(&String.to_charlist/1)
     |> Stream.map(&scan_line/1)
     |> Stream.filter(& &1)
-    |> Enum.sum()
+    |> Stream.map(&score_remaining_pattern/1)
+    |> Enum.sort()
+    |> List.to_tuple()
+    |> (fn tuple ->
+          idx =
+            (tuple_size(tuple) / 2)
+            |> ceil
+            |> (&(&1 - 1)).()
+
+          elem(tuple, idx)
+        end).()
     |> IO.inspect()
   end
 
@@ -28,7 +38,7 @@ defmodule Aoc do
               {:cont, [char | acc]}
 
             pair(char) != last ->
-              {:halt, char}
+              {:halt, nil}
 
             true ->
               {:cont, rest}
@@ -40,18 +50,23 @@ defmodule Aoc do
     )
     |> case do
       l when is_list(l) ->
-        nil
+        Enum.map(l, &pair/1)
 
-      c ->
-        char_points(c)
+      _ ->
+        nil
     end
   end
 
+  def score_remaining_pattern(list) do
+    list
+    |> Enum.reduce(0, &(&2 * 5 + char_points(&1)))
+  end
+
   def pair(char) do
-    %{?] => ?[, ?} => ?{, ?) => ?(, ?> => ?<}[char]
+    %{?( => ?), ?[ => ?], ?{ => ?}, ?< => ?>, ?) => ?(, ?] => ?[, ?} => ?{, ?> => ?<}[char]
   end
 
   def char_points(char) do
-    %{?) => 3, ?] => 57, ?} => 1197, ?> => 25137}[char]
+    %{?) => 1, ?] => 2, ?} => 3, ?> => 4}[char]
   end
 end

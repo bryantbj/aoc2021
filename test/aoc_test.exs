@@ -14,7 +14,7 @@ defmodule AocTest do
                       <{([([[(<>()){}]>(<<{{
                       <{([{{}}[<[[[<>{}]]]>[]]")
 
-    assert result == 26397
+    assert result == 288_957
   end
 
   test "runs with input" do
