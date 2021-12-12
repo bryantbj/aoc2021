@@ -1,5 +1,5 @@
 defmodule Grid do
-  defstruct grid: %{}, flashes: 0, sync: 0
+  defstruct grid: %{}, flashes: 0
 
   def new(input) do
     grid =
@@ -8,7 +8,7 @@ defmodule Grid do
           into: %{},
           do: {{row, col}, energy - ?0}
 
-    %Grid{grid: grid, flashes: 0, sync: 0}
+    %Grid{grid: grid, flashes: 0}
   end
 
   def neighbors(%{grid: grid}, {x, y}) do
@@ -50,12 +50,6 @@ defmodule Grid do
         |> Map.update(:flashes, 1, &(&1 + 1))
 
       flashed = MapSet.put(flashed, pos)
-
-      grid =
-        case Enum.all?(grid.grid, fn {_pos, val} -> val == 0 end) do
-          true -> Map.put(grid, :sync, true)
-          _ -> grid
-        end
 
       charge(grid, neighbors(grid, pos), flashed)
     end

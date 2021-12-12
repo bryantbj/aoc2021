@@ -17,7 +17,7 @@ defmodule AocTest do
       5283751526
       """)
 
-    assert result == 195
+    assert result == 1656
   end
 
   test "runs with input" do

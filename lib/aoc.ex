@@ -12,18 +12,13 @@ defmodule Aoc do
       input
       |> Grid.new()
 
-    synced =
-      Stream.iterate(1, &(&1 + 1))
-      |> Enum.reduce_while(grid, fn n, grid ->
-        grid = Grid.step(grid)
-
-        case grid do
-          %{sync: true} -> {:halt, n}
-          grid -> {:cont, grid}
-        end
+    grid =
+      1..100
+      |> Enum.reduce(grid, fn _n, grid ->
+        Grid.step(grid)
       end)
 
-    IO.inspect(synced)
+    IO.inspect(grid.flashes)
   end
 
   def test() do
