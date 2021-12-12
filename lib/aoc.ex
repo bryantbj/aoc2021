@@ -8,65 +8,34 @@ defmodule Aoc do
   end
 
   def run(input) do
-    input
-    |> String.split(~r/\s+/, trim: true)
-    |> Stream.map(&String.to_charlist/1)
-    |> Stream.map(&scan_line/1)
-    |> Stream.filter(& &1)
-    |> Stream.map(&score_remaining_pattern/1)
-    |> Enum.sort()
-    |> List.to_tuple()
-    |> (fn tuple ->
-          idx =
-            (tuple_size(tuple) / 2)
-            |> ceil
-            |> (&(&1 - 1)).()
+    grid =
+      input
+      |> Grid.new()
 
-          elem(tuple, idx)
-        end).()
-    |> IO.inspect()
+    synced =
+      Stream.iterate(1, &(&1 + 1))
+      |> Enum.reduce_while(grid, fn n, grid ->
+        grid = Grid.step(grid)
+
+        case grid do
+          %{sync: true} -> {:halt, n}
+          grid -> {:cont, grid}
+        end
+      end)
+
+    IO.inspect(synced)
   end
 
-  def scan_line(chars) do
-    chars
-    |> Enum.reduce_while(
-      [],
-      fn
-        char, [last | rest] = acc ->
-          cond do
-            char in '[{<(' ->
-              {:cont, [char | acc]}
-
-            pair(char) != last ->
-              {:halt, nil}
-
-            true ->
-              {:cont, rest}
-          end
-
-        char, [] ->
-          {:cont, [char]}
-      end
-    )
-    |> case do
-      l when is_list(l) ->
-        Enum.map(l, &pair/1)
-
-      _ ->
-        nil
-    end
-  end
-
-  def score_remaining_pattern(list) do
-    list
-    |> Enum.reduce(0, &(&2 * 5 + char_points(&1)))
-  end
-
-  def pair(char) do
-    %{?( => ?), ?[ => ?], ?{ => ?}, ?< => ?>, ?) => ?(, ?] => ?[, ?} => ?{, ?> => ?<}[char]
-  end
-
-  def char_points(char) do
-    %{?) => 1, ?] => 2, ?} => 3, ?> => 4}[char]
+  def test() do
+    run("5483143223
+        2745854711
+        5264556173
+        6141336146
+        6357385478
+        4167524645
+        2176841721
+        6882881134
+        4846848554
+        5283751526")
   end
 end
