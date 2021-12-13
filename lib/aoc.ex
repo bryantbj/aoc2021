@@ -8,29 +8,36 @@ defmodule Aoc do
   end
 
   def run(input) do
-    grid =
-      input
-      |> Grid.new()
+    input
+    |> parse()
+    |> Recursion.recur()
+    |> IO.inspect()
+  end
 
-    grid =
-      1..100
-      |> Enum.reduce(grid, fn _n, grid ->
-        Grid.step(grid)
-      end)
+  def parse(input) do
+    input
+    |> String.split(~r/\s+/, trim: true)
+    |> Enum.reduce(%{}, fn line, acc ->
+      [left, right] = String.split(line, "-")
+      acc = Map.update(acc, left, [right], &[right | &1])
 
-    IO.inspect(grid.flashes)
+      if left == "start" or right == "end" do
+        acc
+      else
+        Map.update(acc, right, [left], &[left | &1])
+      end
+    end)
   end
 
   def test() do
-    run("5483143223
-        2745854711
-        5264556173
-        6141336146
-        6357385478
-        4167524645
-        2176841721
-        6882881134
-        4846848554
-        5283751526")
+    run("""
+    start-A
+    start-b
+    A-c
+    A-b
+    b-d
+    A-end
+    b-end
+    """)
   end
 end
