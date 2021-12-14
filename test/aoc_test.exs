@@ -14,7 +14,7 @@ defmodule AocTest do
       b-end
       """)
 
-    assert result == 10
+    assert result == 36
   end
 
   test "test run 2" do
@@ -32,7 +32,7 @@ defmodule AocTest do
       kj-dc
       """)
 
-    assert result == 19
+    assert result == 103
   end
 
   test "test run 3" do
@@ -58,7 +58,7 @@ defmodule AocTest do
       start-RW
       """)
 
-    assert result == 226
+    assert result == 3509
   end
 
   test "runs with input" do
