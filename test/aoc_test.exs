@@ -5,62 +5,33 @@ defmodule AocTest do
   test "test run 1" do
     result =
       Aoc.run("""
-      start-A
-      start-b
-      A-c
-      A-b
-      b-d
-      A-end
-      b-end
+      6,10
+      0,14
+      9,10
+      0,3
+      10,4
+      4,11
+      6,0
+      6,12
+      4,1
+      0,13
+      10,12
+      3,4
+      3,0
+      8,4
+      1,10
+      2,14
+      8,10
+      9,0
+
+      fold along y=7
+      fold along x=5
       """)
 
-    assert result == 36
+    # assert result == 36
   end
 
-  test "test run 2" do
-    result =
-      Aoc.run("""
-      dc-end
-      HN-start
-      start-kj
-      dc-start
-      dc-HN
-      LN-dc
-      HN-end
-      kj-sa
-      kj-HN
-      kj-dc
-      """)
-
-    assert result == 103
-  end
-
-  test "test run 3" do
-    result =
-      Aoc.run("""
-      fs-end
-      he-DX
-      fs-he
-      start-DX
-      pj-DX
-      end-zg
-      zg-sl
-      zg-pj
-      pj-he
-      RW-he
-      fs-DX
-      pj-RW
-      zg-RW
-      start-pj
-      he-WI
-      zg-he
-      pj-fs
-      start-RW
-      """)
-
-    assert result == 3509
-  end
-
+  # @tag :skip
   test "runs with input" do
     IO.puts("THE REAL DEAL")
     Aoc.run()
