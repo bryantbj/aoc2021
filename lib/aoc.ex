@@ -38,8 +38,6 @@ defmodule Aoc do
       input
       |> parse()
 
-    folds = [hd(folds)]
-
     Enum.reduce(folds, grid, fn {axis, val}, grid ->
       Enum.map(grid, fn {x, y} ->
         case axis do
@@ -52,8 +50,7 @@ defmodule Aoc do
       end)
       |> Enum.uniq()
     end)
-    |> Enum.count(& &1)
-    |> IO.inspect()
+    |> printer()
   end
 
   def parse(input) do
@@ -77,5 +74,38 @@ defmodule Aoc do
       |> Enum.map(fn {direction, val} -> {direction, String.to_integer(val)} end)
 
     {grid, folds}
+  end
+
+  def printer(grid) do
+    {xs, ys} =
+      Enum.reduce(grid, {}, fn
+        {x, y}, {} ->
+          {[x], [y]}
+
+        {x, y}, {xs, ys} ->
+          {[x | xs], [y | ys]}
+      end)
+
+    x_max = Enum.max(xs)
+    y_max = Enum.max(ys)
+
+    template = Enum.map(0..x_max, fn _ -> "." end) |> List.to_tuple()
+    builder = Enum.reduce(0..y_max, {}, fn _, acc -> Tuple.append(acc, template) end)
+
+    builder =
+      for {y, x} <- grid, reduce: builder do
+        builder ->
+          put_in(builder, [Access.elem(x), Access.elem(y)], "#")
+      end
+
+    message =
+      builder
+      |> Tuple.to_list()
+      |> Enum.map(&Tuple.to_list/1)
+      |> Enum.map(&Enum.join(&1, ""))
+      |> Enum.join("\n")
+
+    IO.puts("\n")
+    IO.puts(message)
   end
 end
